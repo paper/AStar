@@ -1,0 +1,35 @@
+@charset "utf-8";
+
+*{margin:0; padding:0;}
+body{
+  padding:20px;
+}
+#box{
+  position:relative;
+}
+#msg{
+  position:fixed;
+  right:10px;
+  top:10px;
+}
+#box span{
+  font-size:12px;
+  position:absolute;
+  width:20px;
+  height:20px;
+  background-color:#eee;
+  color:#000;
+  text-align:center;
+  line-height:20px;
+}
+#box span.block{
+  background-color:#999;
+}
+#box span.A{
+  color:#fff;
+  background-color:blue;
+}
+#box span.B{
+  color:#fff;
+  background-color:red;
+}
