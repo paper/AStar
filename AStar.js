@@ -181,6 +181,32 @@ function getH(elem){
   return z * 10;
 }
 
+// 判断周边的某个点（x，y），和 elem 节点，组成的4节点矩形，另外一条斜线不是障碍物
+// 如果不是障碍物返回true，反之返回false
+function checkPass(x, y, round_x, round_y){
+  //左上
+  if( round_x < x && round_y < y ){
+    if( r[y-1][x] == 1 && r[y][x-1] == 1 ) return false;
+  }
+  
+  //右上
+  if( round_x > x && round_y < y ){
+    if( r[y-1][x] == 1 && r[y][x+1] == 1 ) return false;
+  }
+  
+  //左下
+  if( round_x < x && round_y > y ){
+    if( r[y+1][x] == 1 && r[y][x-1] == 1 ) return false;
+  }
+  
+  //右下
+  if( round_x > x && round_y > y ){
+    if( r[y][x+1] == 1 && r[y+1][x] == 1 ) return false;
+  }
+
+  return true;
+}
+
 // 通过传入一个节点，得到它周边的节点（排除墙）
 // 并设置周边节点对于的G和H，F值
 function getElemRound(elem){
@@ -188,23 +214,24 @@ function getElemRound(elem){
   var y = elem.y;
   var G = elem.G;
   
-  var t = [
+  var round = [
     [x - 1, y - 1, 14], [x, y - 1, 10], [x + 1, y - 1, 14],
     [x - 1, y, 10], [x + 1, y, 10],
     [x - 1, y + 1, 14], [x, y + 1, 10], [x + 1, y + 1, 14]
   ];
   
-  var tf = t.filter(function(v){
-    var x = v[0];
-    var y = v[1];
-    
-    return x >= 0 && x < col && 
-           y >= 0 && y < row &&
-           r[y][x] != 1 &&
-           close_list.indexOf( [x, y].join() ) == -1;
+  var roundOk = round.filter(function(v){
+    var round_x = v[0];
+    var round_y = v[1];
+
+    return round_x >= 0 && round_x < col &&
+           round_y >= 0 && round_y < row &&
+           r[round_y][round_x] != 1 &&
+           close_list.indexOf( [round_x, round_y].join() ) == -1 &&
+           checkPass(x, y, round_x, round_y)
   });
   
-  var result = tf.map(function(v){
+  var result = roundOk.map(function(v){
     var x = v[0];
     var y = v[1];
     var g = v[2];
@@ -259,14 +286,6 @@ function findLowerF(){
   var result = open_list.sort(function(a, b){
     return getElemFormList(a).F - getElemFormList(b).F;
   });
-  
-  var rr = [];
-  
-  result.forEach(function(v){
-    rr.push( getElemFormList( v ) );
-  })
-  
-  console.log(rr);
   
   return getElemFormList( result[0] );
 }
