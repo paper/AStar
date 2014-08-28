@@ -6,11 +6,10 @@ body{
 }
 #box{
   position:relative;
+  min-height:100px;
 }
 #msg{
-  position:fixed;
-  right:10px;
-  top:10px;
+  padding-bottom:10px;
 }
 #box span{
   font-size:12px;
