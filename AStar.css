@@ -1,15 +1,11 @@
 @charset "utf-8";
 
 *{margin:0; padding:0;}
-body{
-  padding:20px;
-}
+body{ padding:20px; }
+
 #box{
   position:relative;
   min-height:100px;
-}
-#msg{
-  padding-bottom:10px;
 }
 #box span{
   font-size:12px;
@@ -27,8 +23,20 @@ body{
 #box span.A{
   color:#fff;
   background-color:blue;
+  
 }
+#box span.A:after{
+  content:"起";
+}
+
 #box span.B{
   color:#fff;
   background-color:red;
 }
+#box span.B:after{
+  content:"终";
+}
+
+#msg{padding-bottom:10px;}
+.ok{color:#333;}
+.error{color:red;}
