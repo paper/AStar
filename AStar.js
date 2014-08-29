@@ -184,9 +184,9 @@ function removeNode(list, node){
   if( index != -1 ){
     list.splice(index, 1);
     return true;
-  }else{
-    return false;
   }
+  
+  return false;
 }
 
 // 判断某个节点，是不是 在 某个 list 里面 

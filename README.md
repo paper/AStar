@@ -13,7 +13,7 @@ Demo 地址： [Here](http://paper.github.io/AStar/AStar.html)
 ## Changelog
 
 ##### 2.0.0
-1. 重新整理代码，可读性，欢迎试读 :D
+1. 重新整理代码，增强语义和可读性，欢迎试读 :D
 2. 一点点优化
 
 ##### 1.1.0
