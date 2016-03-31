@@ -13,6 +13,12 @@ var box = document.getElementById("box");
 var msg = document.getElementById("msg");
 
 // 地图数据
+// 只有0和1数据。0可以行走，1是障碍物
+// [
+//   [0, 1, 1, 1, 0],
+//   [1, 0, 0, 1, 1],
+//   [1, 1, 0, 0, 1]
+// ]
 var map = [];
 
 /*
@@ -41,9 +47,9 @@ var space = 1;
 var startNode = null;
 var endNode = null;
 
-// letsgo函数 判断是否继续循环的key
+// letsgo函数 判断是否找到了路径的key
 // 如果为false 就不再循环
-var letsgoKey = true;
+var foundKey = true;
 
 // 开启列表, 存入坐标的join值 
 // example: [ "3,4", "10,20" ]
@@ -80,6 +86,7 @@ function initMapData(){
   
 }//end initMapData
 
+// 创建节点地图，并初始化一些数据
 function createMap(){
 
   box.style.display = "none";
@@ -308,13 +315,17 @@ function getNodeNewG(curNode, aimNode){
 }//end getNodeNewG
 
 // 寻到开启列表中F值最低的格子
+// 我这里偷懒了,其实这个排序可以优化的:
+//   -> 比如新添加新的节点时,按循序进行插入即可
+//   -> 如果有节点更新了G值, 单独对更新的G值排序即可
 function findLowestF(){
   
   if( openList.length == 1 ){
     return getNode(openList[0]);
   }
   
-  //从 小到大 排序
+  // 按照节点F值从 小到大 排序
+  // 当然你也可以用冒泡的方式去获取
   var result = openList.sort(function(a, b){
     return getNode(a).F - getNode(b).F;
   });
@@ -322,10 +333,11 @@ function findLowestF(){
   return getNode( result[0] );
 }
 
-// let's go :D
+// let's go :)
 function letsgo( callback ){
   
-  if( !letsgoKey || isIn( closeList, endNode ) ){
+  //if( !foundKey || isIn( closeList, endNode ) ){
+  if( !foundKey ){
     callback && callback(true);
     return;
   }
@@ -336,28 +348,32 @@ function letsgo( callback ){
     return;
   }
   
+  // 找出F值最低的节点，如果开启列表只有一个节点，就取这个节点
   var curNode = findLowestF();
   
+  // 把当前节点从开启列表移除，加入到关闭列表
   removeNode(openList, curNode);
   pushNode(closeList, curNode);
   
   // 得到当前节点的周边的可用节点
   var curNodeRound = getNodeRound(curNode);
   
-  // 如果周边没有可走的路
-  // 则循环取出 openList 更合适的值
+  // 如果 curNode 的周边没有可走的路
+  // 则会循环调用前面的 findLowestF 方法
   if( curNodeRound.length != 0 ){
     
     for(var i=0, len = curNodeRound.length; i < len; i++){
       var round = curNodeRound[i];
       
+      // 发现周边有个节点和终点是同一个，说明找到了
       if( isSameNode(round, endNode) ){
         endNode.father = curNode;
-        letsgoKey = false;
+        foundKey = false;
         break;
       }
       
-      //round 不在开启列表
+      // 周边节点如果不在开启列表，就加入到开启列表中，
+      // 并设置它的父亲节点就是当前节点
       if( !isIn(openList, round) ){
         pushNode(openList, round);
         round.father = curNode;
@@ -366,6 +382,7 @@ function letsgo( callback ){
         var old_G = round.G;
         var new_G = getNodeNewG(curNode, round);
         
+        // 如果更低，意味着更好的路径，设置它的父节点，并更新它的G值
         if( new_G < old_G ){
           round.father = curNode;
           round.G = new_G;
@@ -378,7 +395,7 @@ function letsgo( callback ){
   // 延迟循环，防止浏览器假死
   setTimeout(function(){
     letsgo(callback);
-  }, 10);
+  }, 5);
   
 }//end letsgo
 
@@ -394,11 +411,17 @@ function showErrorMsg(){
 
 /*------------------------ Run ------------------------*/
 
+// 初始化地图基本数据。0和1
 map = initMapData();
+
+// 创建地图。给每个节点设置初始值
 createMap();
+
+// 随机创建起点和终点
 createAB();
 
-// 先初始化开始节点
+// 初始化开始节点。
+// 先把起点放到开启列表中
 pushNode(openList, startNode);
 
 letsgo(function(isOk){
@@ -406,11 +429,12 @@ letsgo(function(isOk){
   if( isOk ){
     showOKMsg();
    
+    // 类似向root查找多叉树
     var father = endNode.father;
 
     while( father ){
       if( father.className == "A" ){ break; }
-      father.innerHTML = "o";
+      father.innerHTML = "◉";
       father = father.father;
     }
   }else{

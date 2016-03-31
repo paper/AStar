@@ -1,5 +1,6 @@
 @charset "utf-8";
 
+html{background: #000;}
 *{margin:0; padding:0;}
 body{ padding:20px; }
 
@@ -18,7 +19,7 @@ body{ padding:20px; }
   line-height:20px;
 }
 #box span.block{
-  background-color:#999;
+  background-color:#888;
 }
 #box span.A{
   color:#fff;
@@ -37,6 +38,6 @@ body{ padding:20px; }
   content:"终";
 }
 
-#msg{padding-bottom:10px;}
-.ok{color:#333;}
-.error{color:red;}
+#msg{padding-bottom:10px;color:white;font-size: 18px;}
+#msg.ok{color:white;}
+#msg.error{color:yellow;}
