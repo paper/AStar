@@ -4,7 +4,7 @@ AStar
 A* 算法
 ## 说明
 
-Demo 地址： [Here](http://paper.github.io/AStar/AStar.html)
+**Demo 地址：** [Here](http://paper.github.io/AStar/AStar.html)
 
 算法主要来自：http://www.policyalmanac.org/games/aStarTutorial.htm
 而且被翻译成了各种语言，感谢译者们！
